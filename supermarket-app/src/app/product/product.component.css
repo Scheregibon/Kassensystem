@@ -1,0 +1,52 @@
+.productListing {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem; /* Abstand zwischen den Karten */
+    justify-content: center; /* Zentriert die Karten horizontal */
+    padding: 2rem; /* Abstand innerhalb des Containers */
+    max-width: 1200px; /* Maximale Breite des Containers */
+    margin: 0 auto; /* Zentriert den Container auf der Seite */
+    background-color: #ce8b26; /* Heller Hintergrund für den Container */
+    border-radius: 10px; /* Abgerundete Ecken für den Container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Leichter Schatten */
+}
+
+.productListing .product-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    width: calc(33.333% - 2rem); /* Maximale Breite für 3 Karten pro Reihe */
+    max-width: 300px; /* Begrenzung der Kartenbreite */
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.productListing .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.productListing .product-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.productListing .product-card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.productListing .product-card p:last-child {
+    margin-bottom: 0;
+}
+
+.productListing .product-card .price {
+    font-weight: bold;
+    color: #007bff;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}

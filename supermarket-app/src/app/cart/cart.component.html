@@ -1,0 +1,16 @@
+<p>cart works!</p>
+
+<div class="cart-container">
+    <h2>Warenkorb:</h2>
+    
+    <!-- Produktliste -->
+    <div *ngFor="let item of cartItems" class="cart-item">
+      <p>{{ item.name }} - {{ item.price | currency }}</p>
+    </div>
+  
+    <!-- Gesamtsumme -->
+    <div class="cart-total">
+      <strong>Gesamtsumme:</strong>
+      
+    </div>
+  </div>
