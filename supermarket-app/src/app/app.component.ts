@@ -5,11 +5,12 @@ import { LoginComponent } from './pages/login/login.component';
 import { CartComponent } from './cart/cart.component';
 import { ProductComponent } from './product/product.component';
 import { ProductModel } from './productModel';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-root',
-  imports: [SearchBarComponent, LoginComponent, CartComponent, ProductComponent],
+  imports: [SearchBarComponent, LoginComponent, CartComponent, ProductComponent, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -122,17 +123,21 @@ export class AppComponent {
   // Filter für die Produktliste
   filteredProducts: ProductModel[] = [...this.productList];
 
-  //methode zum filtern der Produkte
-  filterProducts(category: string, event: Event): void {
-    event.preventDefault(); // Verhindert das Standardverhalten des a Tags
-    console.log('Filtering by category:', category);
+  loading: boolean = false;
 
+filterProducts(category: string, event: Event): void {
+  event.preventDefault();
+  this.loading = true; // Ladeanzeige aktivieren
+
+  setTimeout(() => {
     if (category === 'Alle') {
       this.filteredProducts = [...this.productList];
     } else {
       this.filteredProducts = this.productList.filter(p => p.category === category);
     }
-  }
+    this.loading = false; // Ladeanzeige deaktivieren
+  }, 500); // Simulierte Ladezeit
+}
 
 //Methode wird noch überarbeitet
 

@@ -1,5 +1,3 @@
-<body>
-  
 
 <header class="shop-header">
   <div class="logo">🐾 HealthyPet</div>
@@ -38,9 +36,9 @@
 
   <!-- Produkte -->
   <section class="product-list">
-    <app-product [products]="filteredProducts"></app-product>
+    <div *ngIf="loading">Produkte werden geladen...</div>
+    <app-product *ngIf="!loading" [products]="filteredProducts"></app-product>
   </section>
-</main>
 
 <footer class="shop-footer">
   <p>© 2025 TierShop Alle Rechte vorbehalten</p>
@@ -50,5 +48,3 @@
     <a href="#">Kontakt</a>
   </div>
 </footer>
-
-</body>
