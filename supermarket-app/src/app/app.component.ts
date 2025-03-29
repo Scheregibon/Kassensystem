@@ -119,16 +119,17 @@ export class AppComponent {
     }
   ];
 
-// funktioniert gerade irgendwie nicht ka warum, die Logik sollte eigentlich passen
   // Filter für die Produktliste
   filteredProducts: ProductModel[] = [...this.productList];
 
   //methode zum filtern der Produkte
-  filterProducts(category: string): void {
+  filterProducts(category: string, event: Event): void {
+    event.preventDefault(); // Verhindert das Standardverhalten des <a>-Tags
+
     if (category === 'Alle') {
-      this.filteredProducts = [...this.productList]; // Zeige alle Produkte
+      this.filteredProducts = [...this.productList]; // Zeigt alle Produkte an
     } else {
-      this.filteredProducts = this.productList.filter(p => p.category === category); // Filtere nach Kategorie
+      this.filteredProducts = this.productList.filter(p => p.category === category); // Filter by category
     }
   }
 
