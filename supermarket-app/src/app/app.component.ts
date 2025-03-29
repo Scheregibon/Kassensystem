@@ -9,7 +9,7 @@ import { ProductModel } from './productModel';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SearchBarComponent, LoginComponent, CartComponent, ProductComponent, ],
+  imports: [SearchBarComponent, LoginComponent, CartComponent, ProductComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -111,7 +111,7 @@ export class AppComponent {
       name: 'Wellensittich-Körnerfutter',
       description: 'Ausgewogene Körnermischung für gesunde Vögel.',
       price: 2.49,
-      category: 'Vögel',
+      category: 'Vogel',
       imageUrl: 'assets/images/wellensittich-futter.jpg',
       inStock: true,
       rating: 4.2,
@@ -124,12 +124,13 @@ export class AppComponent {
 
   //methode zum filtern der Produkte
   filterProducts(category: string, event: Event): void {
-    event.preventDefault(); // Verhindert das Standardverhalten des <a>-Tags
+    event.preventDefault(); // Verhindert das Standardverhalten des a Tags
+    console.log('Filtering by category:', category);
 
     if (category === 'Alle') {
-      this.filteredProducts = [...this.productList]; // Zeigt alle Produkte an
+      this.filteredProducts = [...this.productList];
     } else {
-      this.filteredProducts = this.productList.filter(p => p.category === category); // Filter by category
+      this.filteredProducts = this.productList.filter(p => p.category === category);
     }
   }
 
