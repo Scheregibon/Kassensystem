@@ -8,4 +8,5 @@ export interface ProductModel {
   inStock: boolean;
   rating?: number; // z. B. 4.5 Sterne
   tags?: string[]; // z. B. ["bio", "getreidefrei"]
+  quantity?: number;
 }

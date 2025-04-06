@@ -50,3 +50,23 @@
     font-size: 1rem;
     margin-top: 0.5rem;
 }
+
+button {
+    background-color: #4CAF50; /* Grüner Hintergrund */
+    color: white; /* Weiße Schrift */
+    border: none; /* Kein Rahmen */
+    padding: 10px 15px; /* Innenabstand */
+    border-radius: 5px; /* Abgerundete Ecken */
+    cursor: pointer; /* Zeigt den Mauszeiger als Hand */
+    font-size: 14px; /* Schriftgröße */
+    transition: background-color 0.3s ease; /* Weicher Übergang bei Hover */
+  }
+  
+  button:hover {
+    background-color: #45a049; /* Dunkleres Grün beim Hover */
+  }
+  
+  button:disabled {
+    background-color: #ccc; /* Grauer Hintergrund für deaktivierte Buttons */
+    cursor: not-allowed; /* Zeigt an, dass der Button nicht klickbar ist */
+  }

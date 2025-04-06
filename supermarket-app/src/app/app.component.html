@@ -38,6 +38,7 @@
   <section class="product-list">
     <div *ngIf="loading">Produkte werden geladen...</div>
     <app-product *ngIf="!loading" [products]="filteredProducts"></app-product>
+    <div *ngIf="loading">Produkte werden geladen...</div>
   </section>
 
 <footer class="shop-footer">

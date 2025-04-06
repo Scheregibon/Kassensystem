@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductModel } from '../productModel';
+import { CartService } from './cart.service';
 
 @Component({
   selector: 'app-cart',
@@ -8,6 +9,26 @@ import { ProductModel } from '../productModel';
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
-export class CartComponent {
-  @Input() cartItems: ProductModel[] = [];
+export class CartComponent implements OnInit{
+  cart: ProductModel[] = [];
+
+  constructor(private cartService: CartService) {}
+
+  ngOnInit(): void {
+    this.cart = this.cartService.getCart();
+  }
+
+  addToCart(product: ProductModel): void {
+    this.cartService.addToCart(product);
+    this.cart = this.cartService.getCart(); // Aktualisiere die lokale Warenkorb-Liste
+  }
+  
+  removeFromCart(productId: number): void {
+    this.cartService.removeFromCart(productId);
+    this.cart = this.cartService.getCart(); // Aktualisiere die lokale Warenkorb-Liste
+  }
+  
+  getTotalPrice(): number {
+    return this.cart.reduce((total, product) => total + product.price * (product.quantity || 1), 0);
+  }
 }

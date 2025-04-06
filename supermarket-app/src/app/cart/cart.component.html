@@ -1,16 +1,23 @@
 <p>cart works!</p>
 
 <div class="cart-container">
-    <h2>Warenkorb:</h2>
-    
-    <!-- Produktliste -->
-    <div *ngFor="let item of cartItems" class="cart-item">
-      <p>{{ item.name }} - {{ item.price | currency }}</p>
-    </div>
+  <h2>Warenkorb:</h2>
   
-    <!-- Gesamtsumme -->
-    <div class="cart-total">
-      <strong>Gesamtsumme:</strong>
-      
-    </div>
+  <!-- Produktliste -->
+  <ul>
+    <li *ngFor="let product of cart">
+      {{ product.name }} - {{ product.price | currency:'EUR' }} 
+      (Menge: {{ product.quantity }})
+      <button (click)="removeFromCart(product.id)">-</button>
+      <button (click)="addToCart(product)">+</button>
+    </li>
+  </ul>
+
+  <!-- Gesamtsumme -->
+  <div class="cart-total">
+    <strong>Gesamtsumme:</strong> {{ getTotalPrice() | currency:'EUR' }}
   </div>
+</div>
+
+    
+  

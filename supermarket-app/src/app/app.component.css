@@ -157,3 +157,10 @@ footer .footer-links a {
 footer .footer-links a:hover {
     text-decoration: underline;
 }
+
+.search-bar {
+    display: flex; /* Flexbox für Zentrierung */
+    justify-content: center; /* Zentriert horizontal */
+    align-items: center; /* Zentriert vertikal */
+    
+  }

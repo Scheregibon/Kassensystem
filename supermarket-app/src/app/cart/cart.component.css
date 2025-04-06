@@ -88,3 +88,21 @@
     font-weight: bold;
     margin-top: 1rem;
   }
+ button {
+    background-color: #4CAF50; /* Grüner Hintergrund */
+    color: white; /* Weiße Schrift */
+    border: none; /* Kein Rahmen */
+    padding: 5px 10px; /* Innenabstand */
+    border-radius: 5px; /* Abgerundete Ecken */
+    cursor: pointer; /* Zeigt den Mauszeiger als Hand */
+    font-size: 12px; /* Schriftgröße */
+    margin: 0 5px; /* Abstand zwischen den Buttons */
+  }
+  
+  button:hover {
+    background-color: #45a049; /* Dunkleres Grün beim Hover */
+  }
+  
+  button:active {
+    background-color: #3e8e41; /* Noch dunkleres Grün beim Klicken */
+  }
