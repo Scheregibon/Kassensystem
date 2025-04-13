@@ -1,12 +1,12 @@
-<p>cart works!</p>
+
 
 <div class="cart-container">
   <h2>Warenkorb:</h2>
-  
+
   <!-- Produktliste -->
   <ul>
     <li *ngFor="let product of cart">
-      {{ product.name }} - {{ product.price | currency:'EUR' }} 
+      {{ product.name }} - {{ product.price | currency:'EUR' }}
       (Menge: {{ product.quantity }})
       <button (click)="removeFromCart(product.id)">-</button>
       <button (click)="addToCart(product)">+</button>
@@ -19,5 +19,4 @@
   </div>
 </div>
 
-    
-  
+

@@ -136,7 +136,7 @@ filterProducts(category: string, event: Event): void {
       this.filteredProducts = this.productList.filter(p => p.category === category);
     }
     this.loading = false; // Ladeanzeige deaktivieren
-  }, 500); // Simulierte Ladezeit
+  }, 0); // Simulierte Ladezeit
 }
 
 //Methode wird noch überarbeitet

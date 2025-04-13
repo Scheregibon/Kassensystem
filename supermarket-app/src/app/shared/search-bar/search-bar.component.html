@@ -1,12 +1,9 @@
 
-
-<!-- Hier wird die Search Bar Funktion aufgeführt, dabei ist dies der Grobe aufbau der dann in app.component.html aufgerufen wird -->
-<p>search-bar works!</p>
-<input 
-  type="text" 
-  class="searchbar" 
-  placeholder="Suche nach Produkt-ID..." 
-  #productIdInput 
-  autofocus 
+<input
+  type="text"
+  class="searchbar"
+  placeholder="Suche nach Produkt-ID..."
+  #productIdInput
+  autofocus
 />
 <button (click)="addToCart(productIdInput.value)">Zum Warenkorb hinzufügen</button>
