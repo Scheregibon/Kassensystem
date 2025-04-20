@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { AppComponent } from '../../app.component';
-import { CartService } from '../../cart/cart.service';
-import { Input } from '@angular/core';  
-import { ProductModel } from '../../productModel';
+import { CartService } from '../cart/cart.service';
+import { Input } from '@angular/core';
+import { ProductModel } from '../../models/product.model';
 
 @Component({
   selector: 'app-search-bar',

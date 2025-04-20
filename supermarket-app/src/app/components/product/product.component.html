@@ -1,0 +1,13 @@
+<div class="products-container">
+  <div *ngIf="products.length === 0" class="no-products">
+    No products found.
+  </div>
+
+  <div *ngFor="let product of products" class="product-card">
+    <img [src]="product.imageUrl || 'assets/placeholder.png'" alt="{{ product.name }}" class="product-image">
+    <h3>{{ product.name }}</h3>
+    <p class="product-price">{{ product.price | currency:'EUR' }}</p>
+    <p *ngIf="product.description" class="product-description">{{ product.description }}</p>
+    <button class="add-to-cart-btn">Add to Cart</button>
+  </div>
+</div>

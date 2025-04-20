@@ -2,7 +2,6 @@
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
     background-color: #f9f9f9;
     color: #333;
 }
@@ -162,5 +161,21 @@ footer .footer-links a:hover {
     display: flex; /* Flexbox für Zentrierung */
     justify-content: center; /* Zentriert horizontal */
     align-items: center; /* Zentriert vertikal */
-    
+
   }
+/* Login container styling */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 8rem); /* Adjust for header and footer */
+  background-color: #f9f9f9;
+}
+
+/* Loading indicator */
+.loading-indicator {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
+}

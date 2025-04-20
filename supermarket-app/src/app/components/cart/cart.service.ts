@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ProductModel } from '../productModel';
+import { ProductModel } from '../../models/product.model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +36,7 @@ export class CartService {
     } else {
       console.log(`Produkt mit ID ${productId} nicht im Warenkorb gefunden.`);
     }
-    
+
     }
 
 }

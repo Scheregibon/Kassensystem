@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductModel } from '../productModel';
+import { ProductModel } from '../../models/product.model';
 import { CartService } from './cart.service';
 
 @Component({
@@ -22,12 +22,12 @@ export class CartComponent implements OnInit{
     this.cartService.addToCart(product);
     this.cart = this.cartService.getCart(); // Aktualisiere die lokale Warenkorb-Liste
   }
-  
+
   removeFromCart(productId: number): void {
     this.cartService.removeFromCart(productId);
     this.cart = this.cartService.getCart(); // Aktualisiere die lokale Warenkorb-Liste
   }
-  
+
   getTotalPrice(): number {
     return this.cart.reduce((total, product) => total + product.price * (product.quantity || 1), 0);
   }

@@ -1,73 +1,81 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api';
-  private currentUserSubject: BehaviorSubject<any>;
-  public currentUser: Observable<any>;
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+  private apiUrl = 'http://localhost:8080/api/auth';
 
   constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private http: HttpClient
   ) {
-    // Initialize with null or get from localStorage only in browser
-    const initialValue = isPlatformBrowser(this.platformId)
-      ? JSON.parse(localStorage.getItem('currentUser') || 'null')
-      : null;
-
-    this.currentUserSubject = new BehaviorSubject<any>(initialValue);
-    this.currentUser = this.currentUserSubject.asObservable();
+    // Check if user is already logged in, but only in browser environment
+    if (isPlatformBrowser(this.platformId)) {
+      const storedAuth = localStorage.getItem('isAuthenticated');
+      if (storedAuth === 'true') {
+        this.isAuthenticatedSubject.next(true);
+      }
+    }
   }
 
-  public get currentUserValue() {
-    return this.currentUserSubject.value;
-  }
+  login(username: string, password: string): Observable<boolean> {
 
-  login(username: string, password: string) {
-    // Create form data for Spring Boot form login
+    console.log('Login method called with username:', username);
+    // Create form data
     const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
 
-    // Use withCredentials to ensure cookies are sent with the request
-    return this.http.post<any>(`${this.apiUrl}/auth/login`, formData, {
-      withCredentials: true,
-      observe: 'response'
-    }).pipe(
-      tap(response => {
-        const user = { username, authenticated: true };
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('currentUser', JSON.stringify(user));
-        }
-        this.currentUserSubject.next(user);
-      }),
-      catchError(error => {
-        console.error('Login error:', error);
-        return throwError(() => new Error('Login failed'));
-      })
-    );
+    // For debugging
+    console.log('Sending login request to:', `${this.apiUrl}/login`);
+    console.log('Username:', username);
+
+    // Set proper headers for form data
+    const headers = new HttpHeaders({
+      'Accept': 'application/json'
+      // Note: Content-Type is automatically set for FormData
+    });
+
+    // Send POST request to backend
+    return this.http.post<any>(`${this.apiUrl}/login`, formData, { headers })
+      .pipe(
+        map(response => {
+          console.log('Login successful:', response);
+          this.isAuthenticatedSubject.next(true);
+
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem('isAuthenticated', 'true');
+            if (response && response.token) {
+              localStorage.setItem('authToken', response.token);
+            }
+          }
+          return true;
+        }),
+        catchError(error => {
+          console.error('Login error:', error);
+          return throwError(() => new Error(error.error?.message || 'Login failed. Please check your credentials.'));
+        })
+      );
   }
 
-  logout() {
-    // Only remove from localStorage if in browser environment
+  logout(): void {
+    this.isAuthenticatedSubject.next(false);
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('currentUser');
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('authToken');
     }
-    this.currentUserSubject.next(null);
-    return this.http.post<any>(`${this.apiUrl}/auth/logout`, {}).pipe(
-      catchError(error => {
-        return throwError(() => new Error('Logout failed'));
-      })
-    );
   }
 
-  isLoggedIn(): boolean {
-    return !!this.currentUserValue;
+  getAuthToken(): string | null {
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('authToken');
+    }
+    return null;
   }
 }

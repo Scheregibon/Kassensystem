@@ -1,155 +1,84 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { SearchBarComponent } from './shared/search-bar/search-bar.component';
-import { LoginComponent } from './pages/login/login.component';
-import { CartComponent } from './cart/cart.component';
-import { ProductComponent } from './product/product.component';
-import { ProductModel } from './productModel';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+                import { CommonModule } from '@angular/common';
+                import { AuthService } from './services/auth.service';
+                import { ProductModel } from './models/product.model';
+                import { LoginComponent } from './components/login/login.component';
+                import { SearchBarComponent } from './components/search-bar/search-bar.component';
+                import { CartComponent } from './components/cart/cart.component';
+                import { ProductComponent } from './components/product/product.component';
 
+                @Component({
+                  selector: 'app-root',
+                  templateUrl: './app.component.html',
+                  styleUrls: ['./app.component.css'],
+                  standalone: true,
+                  imports: [
+                    CommonModule,
+                    LoginComponent,
+                    SearchBarComponent,
+                    CartComponent,
+                    ProductComponent
+                  ]
+                })
+                export class AppComponent implements OnInit {
+                  isAuthenticated = false;
+                  productList: ProductModel[] = [];
+                  filteredProducts: ProductModel[] = [];
+                  loading = false;
 
-@Component({
-  selector: 'app-root',
-  imports: [SearchBarComponent, LoginComponent, CartComponent, ProductComponent, CommonModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
-})
-export class AppComponent {
-  title = 'PetShop';
+                  constructor(private authService: AuthService) {}
 
-  // Produktinformationen welche an product.component durch @Input() weitergegeben werden
-  productList: ProductModel[] = [
-    {
-      id: 101,
-      name: 'Bio-Hundetrockenfutter',
-      description: 'Getreidefreies Trockenfutter für ausgewachsene Hunde mit Rindfleisch.',
-      price: 24.99,
-      category: 'Hunde',
-      imageUrl: 'assets/images/hundetrockenfutter.jpg',
-      inStock: true,
-      rating: 4.7,
-      tags: ['bio', 'getreidefrei', 'hund']
-    },
-    {
-      id: 102,
-      name: 'Premium-Katzenfutter mit Lachs',
-      description: 'Saftiges Nassfutter mit echtem Lachs, reich an Omega-3.',
-      price: 1.89,
-      category: 'Katzen',
-      imageUrl: 'assets/images/katzenfutter-lachs.jpg',
-      inStock: true,
-      rating: 4.8,
-      tags: ['nassfutter', 'lachs', 'katze']
-    },
-    {
-      id: 103,
-      name: 'Kleintier-Müsli',
-      description: 'Gesundes Mixfutter für Hamster, Meerschweinchen und Co.',
-      price: 3.49,
-      category: 'Kleintier',
-      imageUrl: 'assets/images/kleintier-muesli.jpg',
-      inStock: true,
-      rating: 4.3,
-      tags: ['kleintiere', 'müsli', 'vitaminreich']
-    },
-    {
-      id: 104,
-      name: 'Barf-Rindfleisch-Mix (tiefgekühlt)',
-      description: '100% Rindfleisch für BARF-Fütterung bei Hunden.',
-      price: 5.99,
-      category: 'Hunde',
-      imageUrl: 'assets/images/barf-rind.jpg',
-      inStock: false,
-      rating: 4.6,
-      tags: ['barf', 'rind', 'hund']
-    },
-    {
-      id: 105,
-      name: 'Getreidefreies Trockenfutter für Katzen',
-      description: 'Mit Huhn und Süßkartoffeln – für sensible Mägen.',
-      price: 12.99,
-      category: 'Katzen',
-      imageUrl: 'assets/images/katzenfutter-huhn.jpg',
-      inStock: true,
-      rating: 4.4,
-      tags: ['getreidefrei', 'katze', 'spezialfutter']
-    },
-    {
-      id: 106,
-      name: 'Fischflocken für Zierfische',
-      description: 'Nährstoffreiche Flocken für tropische Aquarienfische.',
-      price: 4.25,
-      category: 'Fisch',
-      imageUrl: 'assets/images/fischflocken.jpg',
-      inStock: true,
-      rating: 4.1,
-      tags: ['fisch', 'aquarium', 'flakes']
-    },
-    {
-      id: 107,
-      name: 'Kräuter-Heu für Nager',
-      description: 'Duftendes Heu mit Kräutermix für Kaninchen und Meerschweinchen.',
-      price: 2.99,
-      category: 'Kleintier',
-      imageUrl: 'assets/images/kraeuter-heu.jpg',
-      inStock: true,
-      rating: 4.5,
-      tags: ['heu', 'nager', 'bio']
-    },
-    {
-      id: 108,
-      name: 'Snacksticks für Hunde – Lamm',
-      description: 'Leckere Zwischenmahlzeit für alle Hunderassen.',
-      price: 3.79,
-      category: 'Hunde',
-      imageUrl: 'assets/images/hundesnacks-lamm.jpg',
-      inStock: true,
-      rating: 4.9,
-      tags: ['hund', 'snack', 'lamm']
-    },
-    {
-      id: 109,
-      name: 'Wellensittich-Körnerfutter',
-      description: 'Ausgewogene Körnermischung für gesunde Vögel.',
-      price: 2.49,
-      category: 'Vogel',
-      imageUrl: 'assets/images/wellensittich-futter.jpg',
-      inStock: true,
-      rating: 4.2,
-      tags: ['vogel', 'körner', 'vitamine']
-    }
-  ];
+                  ngOnInit(): void {
+                    // Check authentication status
+                    this.authService.isAuthenticated$.subscribe(
+                      (isAuthenticated: boolean) => {
+                        this.isAuthenticated = isAuthenticated;
+                        if (isAuthenticated) {
+                          this.loadProducts();
+                        }
+                      }
+                    );
+                  }
 
-  // Filter für die Produktliste
-  filteredProducts: ProductModel[] = [...this.productList];
+                  onLoginSuccess(): void {
+                    console.log("Login success received!");
+                    // No need to manually set isAuthenticated as the subscription will handle it
+                    this.loadProducts();
+                  }
 
-  loading: boolean = false;
+                  loadProducts(): void {
+                    // Load all products (replace with your actual data loading logic)
+                    this.loading = true;
 
-filterProducts(category: string, event: Event): void {
-  event.preventDefault();
-  this.loading = true; // Ladeanzeige aktivieren
+                    // Remove the setTimeout and just load the products immediately
+                    this.productList = [];
+                    this.filteredProducts = [...this.productList];
+                    this.loading = false;
 
-  setTimeout(() => {
-    if (category === 'Alle') {
-      this.filteredProducts = [...this.productList];
-    } else {
-      this.filteredProducts = this.productList.filter(p => p.category === category);
-    }
-    this.loading = false; // Ladeanzeige deaktivieren
-  }, 0); // Simulierte Ladezeit
-}
+                    // When you integrate with real API, it will look like:
+                    // this.productService.getAllProducts().subscribe({
+                    //   next: (products) => {
+                    //     this.productList = products;
+                    //     this.filteredProducts = [...this.productList];
+                    //     this.loading = false;
+                    //   },
+                    //   error: (err) => {
+                    //     console.error('Failed to load products', err);
+                    //     this.loading = false;
+                    //   }
+                    // });
+                  }
 
-//Methode wird noch überarbeitet
+                  filterProducts(category: string, event: Event): void {
+                    event.preventDefault();
+                    this.loading = true;
 
-  /*cart: ProductModel[] = [];
-
-  addToCart(event: any) {
-    const Id: number = event as number;
-    const product = this.productList.find(p => p.id === Id);
-    if (product) {
-      this.cart.push(product);
-    }
-  }*/
-
-
-}
+                    // Remove the setTimeout and filter immediately
+                    if (category === 'Alle') {
+                      this.filteredProducts = this.productList;
+                    } else {
+                      this.filteredProducts = this.productList.filter(p => p.category === category);
+                    }
+                    this.loading = false;
+                  }
+                }

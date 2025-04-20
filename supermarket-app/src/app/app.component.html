@@ -1,51 +1,44 @@
-
 <header class="shop-header">
-  <div class="logo">🐾 HealthyPet</div>
-  <div class="cart">
-    🛒 <span class="cart-count">0</span>
-  </div>
-</header>
+    <div class="logo">🐾 HealthyPet</div>
+    <div class="cart">
+      🛒 <span class="cart-count">0</span>
+    </div>
+  </header>
 
-<main>
-  <!-- Kategorien -->
-  <nav class="category-bar">
-    <ul>
-      <li><a href="#" (click)="filterProducts('Alle', $event)">Alle</a></li>
-      <li><a href="#" (click)="filterProducts('Hunde', $event)">Hunde</a></li>
-      <li><a href="#" (click)="filterProducts('Katzen', $event)">Katzen</a></li>
-      <li><a href="#" (click)="filterProducts('Kleintier', $event)">Kleintiere</a></li>
-      <li><a href="#" (click)="filterProducts('Vogel', $event)">Vögel</a></li>
-      <li><a href="#" (click)="filterProducts('Fisch', $event)">Fisch</a></li>
-    </ul>
-  </nav>
+  <main>
+    <!-- Only show login when not authenticated -->
+    <section class="login-container" *ngIf="!isAuthenticated">
+      <app-login (loginSuccess)="onLoginSuccess()"></app-login>
+    </section>
 
-  <!-- Suchleiste -->
-  <section class="search-bar">
-    <app-search-bar></app-search-bar>
-  </section>
+    <!-- Show app content only when authenticated -->
+    <div *ngIf="isAuthenticated">
+      <!-- Categories -->
+      <nav class="category-bar">
+        <ul>
+          <li><a href="#" (click)="filterProducts('Alle', $event)">Alle</a></li>
+          <li><a href="#" (click)="filterProducts('Hunde', $event)">Hunde</a></li>
+          <li><a href="#" (click)="filterProducts('Katzen', $event)">Katzen</a></li>
+          <li><a href="#" (click)="filterProducts('Kleintier', $event)">Kleintiere</a></li>
+          <li><a href="#" (click)="filterProducts('Vogel', $event)">Vögel</a></li>
+          <li><a href="#" (click)="filterProducts('Fisch', $event)">Fisch</a></li>
+        </ul>
+      </nav>
 
-  <!-- Warenkorb -->
-  <section class="cart">
-    <app-cart></app-cart>
-  </section>
+      <!-- Search bar -->
+      <section class="search-bar">
+        <app-search-bar></app-search-bar>
+      </section>
 
-  <!-- Login -->
-  <section class="login">
-    <app-login></app-login>
-  </section>
+      <!-- Cart -->
+      <section class="cart">
+        <app-cart></app-cart>
+      </section>
 
-  <!-- Produkte -->
-  <section class="product-list">
-    <div *ngIf="loading">Produkte werden geladen...</div>
-    <app-product *ngIf="!loading" [products]="filteredProducts"></app-product>
-    <div *ngIf="loading">Produkte werden geladen...</div>
-  </section>
-
-<footer class="shop-footer">
-  <p>© 2025 TierShop Alle Rechte vorbehalten</p>
-  <div class="footer-links">
-    <a href="#">Impressum</a>
-    <a href="#">Datenschutz</a>
-    <a href="#">Kontakt</a>
-  </div>
-</footer>
+      <!-- Products -->
+      <section class="product-list">
+        <div *ngIf="loading" class="loading-indicator">Loading products...</div>
+        <app-product *ngIf="!loading" [products]="filteredProducts"></app-product>
+      </section>
+    </div>
+  </main>
