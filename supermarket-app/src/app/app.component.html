@@ -14,63 +14,76 @@
 
   <!-- Show app content only when authenticated -->
   <div *ngIf="isAuthenticated" class="authenticated-content">
-    <!-- Category filters under header, visible only in SCO mode -->
-    <nav class="category-bar" *ngIf="scoMode && !checkoutMode">
-      <ul>
-        <li><a href="#" (click)="filterProducts('Alle', $event)">Alle</a></li>
-        <li><a href="#" (click)="filterProducts('Hunde', $event)">Hunde</a></li>
-        <li><a href="#" (click)="filterProducts('Katzen', $event)">Katzen</a></li>
-        <li><a href="#" (click)="filterProducts('Kleintier', $event)">Kleintiere</a></li>
-        <li><a href="#" (click)="filterProducts('Vogel', $event)">Vögel</a></li>
-        <li><a href="#" (click)="filterProducts('Fisch', $event)">Fisch</a></li>
-      </ul>
-    </nav>
 
-    <!-- Main layout with dynamic left side and fixed right side -->
-    <div class="main-content">
-      <!-- Left side content - changes based on mode -->
-      <section class="left-content">
-        <!-- Normal search mode content -->
-        <div *ngIf="!scoMode && !checkoutMode" class="product-list-container">
-          <div *ngIf="loading" class="loading-indicator">Loading products...</div>
-          <app-product *ngIf="!loading" [products]="filteredProducts"></app-product>
-        </div>
+    <!-- Payment completion screen -->
+    <div *ngIf="paymentComplete" class="payment-complete-container">
+      <div class="payment-complete-content">
+        <img ngSrc="oiia.gif" alt="Payment Success Animation" class="payment-success-animation" fill>
+        <h2 class="thank-you-message">Vielen Dank für Ihren Einkauf :D</h2>
+        <button class="next-customer-button" (click)="startNewCustomerSession()">Nächster Kunde</button>
+      </div>
+    </div>
 
-        <!-- SCO mode content -->
-        <div *ngIf="scoMode && !checkoutMode" class="search-bar-container">
-          <input type="text" class="search-input" placeholder="Eingabe Barcode">
-        </div>
+    <!-- Regular content when payment is not complete -->
+    <ng-container *ngIf="!paymentComplete">
+      <!-- Category filters under header, visible only in SCO mode -->
+      <nav class="category-bar" *ngIf="scoMode && !checkoutMode">
+        <ul>
+          <li><a href="#" (click)="filterProducts('Alle', $event)">Alle</a></li>
+          <li><a href="#" (click)="filterProducts('Hunde', $event)">Hunde</a></li>
+          <li><a href="#" (click)="filterProducts('Katzen', $event)">Katzen</a></li>
+          <li><a href="#" (click)="filterProducts('Kleintier', $event)">Kleintiere</a></li>
+          <li><a href="#" (click)="filterProducts('Vogel', $event)">Vögel</a></li>
+          <li><a href="#" (click)="filterProducts('Fisch', $event)">Fisch</a></li>
+        </ul>
+      </nav>
 
-        <!-- Checkout mode content -->
-        <div *ngIf="checkoutMode" class="checkout-view">
-          <div class="voucher-section">
-            <div class="voucher-container">
-              <input type="text" class="voucher-input" placeholder="Gutscheincode eingeben">
-              <button class="voucher-button">Einlösen</button>
+      <!-- Main layout with dynamic left side and fixed right side -->
+      <div class="main-content">
+        <!-- Left side content - changes based on mode -->
+        <section class="left-content">
+          <!-- Normal search mode content -->
+          <div *ngIf="!scoMode && !checkoutMode" class="product-list-container">
+            <div *ngIf="loading" class="loading-indicator">Loading products...</div>
+            <app-product *ngIf="!loading" [products]="filteredProducts"></app-product>
+          </div>
+
+          <!-- SCO mode content -->
+          <div *ngIf="scoMode && !checkoutMode" class="search-bar-container">
+            <input type="text" class="search-input" placeholder="Eingabe Barcode">
+          </div>
+
+          <!-- Checkout mode content -->
+          <div *ngIf="checkoutMode" class="checkout-view">
+            <div class="voucher-section">
+              <div class="voucher-container">
+                <input type="text" class="voucher-input" placeholder="Gutscheincode eingeben">
+                <button class="voucher-button">Einlösen</button>
+              </div>
+            </div>
+            <div class="payment-section">
+              <button class="payment-button" (click)="completePayment()">Bezahlen und Abschließen</button>
             </div>
           </div>
-          <div class="payment-section">
-            <button class="payment-button">Bezahlen und Abschließen</button>
+        </section>
+
+        <!-- Right side content - cart stays the same in both modes -->
+        <section class="right-content">
+          <div class="cart-container">
+            <app-cart></app-cart>
           </div>
-        </div>
-      </section>
+          <div class="checkout-button-container" *ngIf="!checkoutMode">
+            <button class="checkout-button" (click)="toggleCheckoutMode()">Abschließen</button>
+          </div>
+        </section>
+      </div>
 
-      <!-- Right side content - cart stays the same in both modes -->
-      <section class="right-content">
-        <div class="cart-container">
-          <app-cart></app-cart>
-        </div>
-        <div class="checkout-button-container" *ngIf="!checkoutMode">
-          <button class="checkout-button" (click)="toggleCheckoutMode()">Abschließen</button>
-        </div>
-      </section>
-    </div>
-
-    <!-- SCO button at bottom left -->
-    <div class="sco-button-container" *ngIf="!checkoutMode">
-      <button class="sco-button" (click)="toggleScoMode()">
-        {{ scoMode ? 'Suchmodus' : 'Kassenmodus' }}
-      </button>
-    </div>
+      <!-- SCO button at bottom left -->
+      <div class="sco-button-container" *ngIf="!checkoutMode">
+        <button class="sco-button" (click)="toggleScoMode()">
+          {{ scoMode ? 'Suchmodus' : 'Kassenmodus' }}
+        </button>
+      </div>
+    </ng-container>
   </div>
 </main>

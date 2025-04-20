@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { ProductModel } from './models/product.model';
 import { LoginComponent } from './components/login/login.component';
@@ -16,7 +16,8 @@ import { CartService } from './components/cart/cart.service';
     CommonModule,
     LoginComponent,
     CartComponent,
-    ProductComponent
+    ProductComponent,
+    NgOptimizedImage
   ]
 })
 export class AppComponent implements OnInit {
@@ -26,6 +27,7 @@ export class AppComponent implements OnInit {
   loading = false;
   scoMode = true; // default after log in
   checkoutMode = false;
+  paymentComplete = false;
   constructor(
     private authService: AuthService,
     public cartService: CartService
@@ -52,6 +54,18 @@ export class AppComponent implements OnInit {
   toggleScoMode(): void {
     this.scoMode = !this.scoMode;
     console.log("Mode switched to:", this.scoMode ? "SCO Mode" : "Search Mode");
+  }
+
+  completePayment(): void {
+    this.paymentComplete = true;
+  }
+
+  // restart userflow
+  startNewCustomerSession(): void {
+    this.checkoutMode = false;
+    this.paymentComplete = false;
+    // TODO: Reset cart here - assuming you have a cart service
+    // this.cartService.clearCart();
   }
 
   toggleCheckoutMode(): void {
