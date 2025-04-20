@@ -1,181 +1,248 @@
-/* Allgemeine Stile */
-
-body {
-    margin: 0;
-    background-color: #f9f9f9;
-    color: #333;
+/* Shop Header */
+.shop-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background-color: #ce8b26;
+  color: white;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 100%;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logout-button {
+  background-color: white;
+  color: #ce8b26;
+  border: none;
+  padding: 8px 16px;
+  margin-right: 50px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Main Content Layout */
 main {
-    padding-bottom: 4rem; /* Platz für den fixierten Footer */
+  padding-top: 70px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Header */
-header.shop-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ce8b26;
-    padding: 1rem 2rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100%;
 }
 
-header .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #fff;
+.authenticated-content {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 70px);
+  width: 100%;
 }
 
-header .search-input {
-    flex: 1;
-    margin: 0 1rem;
-    padding: 0.5rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-header .cart {
-    font-size: 1.2rem;
-    color: #fff;
-    display: flex;
-    align-items: center;
-}
-
-header .cart .cart-count {
-    background-color: #fff;
-    color: #ce8b26;
-    border-radius: 50%;
-    padding: 0.2rem 0.6rem;
-    margin-left: 0.5rem;
-    font-weight: bold;
-}
-
-/* Navigation */
+/* Category Bar */
 .category-bar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f8f8f8; /* Heller Hintergrund */
-    padding: 1rem; /* Mehr Platz für die Navigation */
-    margin-top: 70px; /* Platz für den fixierten Header */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Leichter Schatten */
-    border-bottom: 1px solid #ddd; /* Dezente untere Linie */
+  background-color: #f8f8f8;
+  padding: 0.8rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+  margin-bottom: 0;
+  z-index: 900;
 }
 
 .category-bar ul {
-    list-style: none; /* Entfernt die Standard-Aufzählungszeichen */
-    display: flex;
-    gap: 1.5rem; /* Abstand zwischen den Kategorien */
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .category-bar li {
-    margin: 0;
+  margin: 0;
 }
 
 .category-bar a {
-    text-decoration: none; /* Entfernt die Unterstreichung */
-    color: #555; /* Dezente Schriftfarbe */
-    font-weight: 600; /* Etwas fettere Schrift */
-    font-size: 1rem; /* Einheitliche Schriftgröße */
-    padding: 0.5rem 1rem; /* Mehr Platz um die Links */
-    border-radius: 4px; /* Abgerundete Ecken */
-    transition: background-color 0.3s, color 0.3s; /* Sanfte Übergänge */
+  text-decoration: none;
+  color: #555;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+  display: block;
 }
 
 .category-bar a:hover {
-    background-color: #ce8b26; /* Orangefarbener Hintergrund beim Hover */
-    color: #fff; /* Weiße Schrift beim Hover */
+  background-color: #ce8b26;
+  color: #fff;
 }
 
-.category-bar a:active {
-    background-color: #b37420; /* Dunklerer Hintergrund beim Klicken */
-    color: #fff;
+/* Main layout with left-right split */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  width: 100%;
 }
 
-/* Hauptbereich */
-main.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    padding: 2rem;
-    margin-top: 20px;
+/* Left side content */
+.left-content {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+  height: 100%;
 }
 
-main .product-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
+/* Product list container */
+.product-list-container {
+  padding: 1rem;
 }
 
-main .product-card button {
-    background-color: #ce8b26;
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-main .product-card button:hover {
-    background-color: #b37420;
-}
-
-/* Footer */
-footer.shop-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1rem 0;
-    z-index: 1000;
-    height: 4rem; /* Höhe des Footers */
-}
-
-footer .footer-links a {
-    color: #ce8b26;
-    text-decoration: none;
-    margin: 0 0.5rem;
-    font-weight: 500;
-}
-
-footer .footer-links a:hover {
-    text-decoration: underline;
-}
-
-.search-bar {
-    display: flex; /* Flexbox für Zentrierung */
-    justify-content: center; /* Zentriert horizontal */
-    align-items: center; /* Zentriert vertikal */
-
-  }
-/* Login container styling */
-.login-container {
+/* Search bar container for SCO mode */
+.search-bar-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 8rem); /* Adjust for header and footer */
-  background-color: #f9f9f9;
+  height: 100%;
+  padding-inline: 2rem;
+}
+
+.search-input {
+  width: 80%;
+  max-width: 500px;
+  padding: 1rem;
+  border: 2px solid #ce8b26;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  outline: none;
+}
+.search-input:focus {
+  border-color: #ce8b26;
+  box-shadow: 0 0 0 3px rgba(206, 139, 38, 0.3); /* Orange-colored glow */
+}
+
+/* Right side content - Cart */
+.right-content {
+  width: 35%;
+  min-width: 300px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+  height: 100%;
+}
+
+.cart-container {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* Checkout button container */
+.checkout-button-container {
+  padding: 1rem;
+  background-color: #f8f8f8;
+  border-top: 1px solid #ddd;
+}
+
+.checkout-button {
+  background-color: #ce8b26;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.checkout-button:hover {
+  transform: scale(1.02);
+  background-color: #b37420;
 }
 
 /* Loading indicator */
 .loading-indicator {
   text-align: center;
   padding: 2rem;
-  font-size: 1.2rem;
   color: #666;
+  font-size: 1.1rem;
+}
+
+/* SCO button - Fixed positioning and styling */
+.sco-button-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.sco-button {
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  font-weight: bold;
+  min-width: 120px;
+  text-align: center;
+}
+
+.sco-button:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+}
+
+/* Login container */
+.login-container {
+  height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+  padding-top: 0;
 }
