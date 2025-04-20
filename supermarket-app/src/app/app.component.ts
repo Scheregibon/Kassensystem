@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   filteredProducts: ProductModel[] = [];
   loading = false;
   scoMode = true; // default after log in
+  checkoutMode = false;
   constructor(
     private authService: AuthService,
     public cartService: CartService
@@ -51,6 +52,10 @@ export class AppComponent implements OnInit {
   toggleScoMode(): void {
     this.scoMode = !this.scoMode;
     console.log("Mode switched to:", this.scoMode ? "SCO Mode" : "Search Mode");
+  }
+
+  toggleCheckoutMode(): void {
+    this.checkoutMode = !this.checkoutMode;
   }
 
   loadProducts(): void {

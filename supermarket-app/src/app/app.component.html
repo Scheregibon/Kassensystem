@@ -14,8 +14,8 @@
 
   <!-- Show app content only when authenticated -->
   <div *ngIf="isAuthenticated" class="authenticated-content">
-    <!-- Category filters under header, visible in both modes -->
-    <nav class="category-bar" *ngIf="!scoMode">
+    <!-- Category filters under header, visible only in SCO mode -->
+    <nav class="category-bar" *ngIf="scoMode && !checkoutMode">
       <ul>
         <li><a href="#" (click)="filterProducts('Alle', $event)">Alle</a></li>
         <li><a href="#" (click)="filterProducts('Hunde', $event)">Hunde</a></li>
@@ -31,14 +31,27 @@
       <!-- Left side content - changes based on mode -->
       <section class="left-content">
         <!-- Normal search mode content -->
-        <div *ngIf="!scoMode" class="product-list-container">
+        <div *ngIf="!scoMode && !checkoutMode" class="product-list-container">
           <div *ngIf="loading" class="loading-indicator">Loading products...</div>
           <app-product *ngIf="!loading" [products]="filteredProducts"></app-product>
         </div>
 
         <!-- SCO mode content -->
-        <div *ngIf="scoMode" class="search-bar-container">
+        <div *ngIf="scoMode && !checkoutMode" class="search-bar-container">
           <input type="text" class="search-input" placeholder="Eingabe Barcode">
+        </div>
+
+        <!-- Checkout mode content -->
+        <div *ngIf="checkoutMode" class="checkout-view">
+          <div class="voucher-section">
+            <div class="voucher-container">
+              <input type="text" class="voucher-input" placeholder="Gutscheincode eingeben">
+              <button class="voucher-button">Einlösen</button>
+            </div>
+          </div>
+          <div class="payment-section">
+            <button class="payment-button">Bezahlen und Abschließen</button>
+          </div>
         </div>
       </section>
 
@@ -47,14 +60,14 @@
         <div class="cart-container">
           <app-cart></app-cart>
         </div>
-        <div class="checkout-button-container">
-          <button class="checkout-button">Abschließen</button>
+        <div class="checkout-button-container" *ngIf="!checkoutMode">
+          <button class="checkout-button" (click)="toggleCheckoutMode()">Abschließen</button>
         </div>
       </section>
     </div>
 
     <!-- SCO button at bottom left -->
-    <div class="sco-button-container">
+    <div class="sco-button-container" *ngIf="!checkoutMode">
       <button class="sco-button" (click)="toggleScoMode()">
         {{ scoMode ? 'Suchmodus' : 'Kassenmodus' }}
       </button>

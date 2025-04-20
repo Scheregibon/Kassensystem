@@ -246,3 +246,86 @@ html, body {
   margin-top: 0;
   padding-top: 0;
 }
+
+/* Checkout view styles */
+.checkout-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-top: 40%;
+  padding: 2rem;
+  overflow-y: hidden; /* Prevent scrolling */
+}
+
+.voucher-section {
+  margin-bottom: 1.5rem; /* Reduced from 3rem to bring elements closer */
+}
+
+.voucher-container {
+  display: flex;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.voucher-input {
+  flex: 1;
+  padding: 1rem;
+  font-size: 1rem;
+  border: 2px solid #ce8b26;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+}
+
+.voucher-input:focus {
+  border-color: #ce8b26;
+  box-shadow: 0 0 0 3px rgba(206, 139, 38, 0.3);
+}
+
+.voucher-button {
+  padding: 1rem 1.5rem;
+  background-color: #ce8b26;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.voucher-button:hover {
+  background-color: #b37420;
+}
+
+.payment-section {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Changed from center to flex-start to move up */
+  padding-top: 1rem; /* Add padding instead of using flex:1 */
+}
+
+.payment-button {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.payment-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+/* Also update the left-content to prevent scrolling */
+.left-content {
+  flex: 1;
+  overflow-y: hidden;
+  background-color: #f9f9f9;
+  height: 100%;
+}
