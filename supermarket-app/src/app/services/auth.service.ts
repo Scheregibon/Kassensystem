@@ -9,6 +9,8 @@ import { isPlatformBrowser } from '@angular/common';
 export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+  private usernameSubject = new BehaviorSubject<string>('');
+  public username$ = this.usernameSubject.asObservable()
   private apiUrl = 'http://localhost:8080/api/auth';
 
   constructor(
@@ -43,14 +45,19 @@ export class AuthService {
     });
 
     // Send POST request to backend
-    return this.http.post<any>(`${this.apiUrl}/login`, formData, { headers })
+    return this.http.post<any>(`${this.apiUrl}/login`, formData, {
+      headers,
+      withCredentials: true
+    })
       .pipe(
         map(response => {
           console.log('Login successful:', response);
           this.isAuthenticatedSubject.next(true);
+          this.usernameSubject.next(username);
 
           if (isPlatformBrowser(this.platformId)) {
             localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('username', username);
             if (response && response.token) {
               localStorage.setItem('authToken', response.token);
             }
@@ -67,15 +74,13 @@ export class AuthService {
   logout(): void {
     this.isAuthenticatedSubject.next(false);
     if (isPlatformBrowser(this.platformId)) {
+      this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
+        next: () => console.log('Logout successful'),
+        error: (error) => console.error('Logout error:', error)
+      });
+
       localStorage.removeItem('isAuthenticated');
       localStorage.removeItem('authToken');
     }
-  }
-
-  getAuthToken(): string | null {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem('authToken');
-    }
-    return null;
   }
 }
