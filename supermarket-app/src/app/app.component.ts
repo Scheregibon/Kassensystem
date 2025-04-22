@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from './services/auth.service';
 import { ProductModel } from './models/product.model';
 import { LoginComponent } from './components/login/login.component';
@@ -16,17 +17,23 @@ import { finalize } from 'rxjs/operators';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     LoginComponent,
     CartComponent,
     NgOptimizedImage,
   ]
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewChecked {
+  @ViewChild('searchInput') searchInput!: ElementRef;
+
   isAuthenticated = false;
   username = '';
   productList: ProductModel[] = [];
   filteredProducts: ProductModel[] = [];
   loading = false;
+  searchId: number | null = null;
+  searchError: string | null = null;
+  private shouldFocus = false;
 
   // View state properties
   get scoMode(): boolean {
@@ -53,12 +60,14 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
     // Check authentication status
     this.authService.isAuthenticated$.subscribe(
       (isAuthenticated: boolean) => {
         this.isAuthenticated = isAuthenticated;
         if (isAuthenticated) {
           this.loadProducts();
+          this.shouldFocus = true;
         }
       }
     );
@@ -72,35 +81,55 @@ export class AppComponent implements OnInit {
     this.viewStateService.loading$.subscribe(isLoading => {
       this.loading = isLoading;
     });
+
+    // Subscribe to view mode changes to handle search input focus
+    this.viewStateService.viewMode$.subscribe(mode => {
+      if (mode === 'search' || mode === 'sco') {
+        this.shouldFocus = true;
+      }
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.shouldFocus && this.searchInput) {
+      try {
+        this.searchInput.nativeElement.focus();
+        this.shouldFocus = false;
+      } catch (err) {
+        console.error('Error focusing search input:', err);
+      }
+    }
   }
 
   onLoginSuccess(): void {
     console.log("Login success received!");
     this.loadProducts();
+    this.shouldFocus = true;
   }
 
   toggleScoMode(): void {
     const newMode: ViewMode = this.scoMode ? 'search' : 'sco';
     this.viewStateService.setViewMode(newMode);
     console.log("Mode switched to:", newMode);
+    this.shouldFocus = true;
   }
+
   completePayment(): void {
     this.viewStateService.setLoading(true);
-    this.cartService.completeCheckout().subscribe(
-      success => {
+    this.cartService.completeCheckout().subscribe({
+      next: success => {
         this.viewStateService.setLoading(false);
         if (success) {
           this.viewStateService.setViewMode('paymentComplete');
         } else {
           console.error('Checkout failed');
-          // Show error message
         }
       },
-      error => {
+      error: error => {
         this.viewStateService.setLoading(false);
         console.error('Checkout error:', error);
       }
-    );
+    });
   }
 
   // Restart user-flow
@@ -117,9 +146,14 @@ export class AppComponent implements OnInit {
     this.viewStateService.setLoading(true);
     this.productService.getAllProducts()
       .pipe(finalize(() => this.viewStateService.setLoading(false)))
-      .subscribe(products => {
-        this.productList = products;
-        this.filteredProducts = [...this.productList];
+      .subscribe({
+        next: (products) => {
+          this.productList = products;
+          this.filteredProducts = [...this.productList];
+        },
+        error: (error) => {
+          console.error('Failed to load products:', error);
+        }
       });
   }
 
@@ -127,14 +161,16 @@ export class AppComponent implements OnInit {
     event.preventDefault();
     this.viewStateService.setLoading(true);
 
-    // Add artificial delay for UX feedback
-    setTimeout(() => {
-      this.productService.getProductsByCategory(category)
-        .pipe(finalize(() => this.viewStateService.setLoading(false)))
-        .subscribe(products => {
+    this.productService.getProductsByCategory(category)
+      .pipe(finalize(() => this.viewStateService.setLoading(false)))
+      .subscribe({
+        next: (products) => {
           this.filteredProducts = products;
-        });
-    }, 300);
+        },
+        error: (error) => {
+          console.error(`Failed to load ${category} products:`, error);
+        }
+      });
   }
 
   logout(): void {
@@ -156,5 +192,43 @@ export class AppComponent implements OnInit {
     // Add to cart
     this.cartService.addToCart(product);
     console.log('Product added to cart:', product);
+  }
+
+  // Handle product search by ID - only triggered by Enter key
+  searchProduct(event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (!this.searchId) {
+      this.searchError = "Bitte geben Sie eine Produkt-ID ein";
+      this.refocusInput();
+      return;
+    }
+
+    this.searchError = null;
+    this.viewStateService.setLoading(true);
+
+    this.productService.getProductById(this.searchId)
+      .pipe(finalize(() => {
+        this.viewStateService.setLoading(false);
+        this.refocusInput();
+      }))
+      .subscribe({
+        next: (product) => {
+          if (product) {
+            this.addToCart(product);
+            this.searchId = null; // Clear the input after successful search
+          }
+        },
+        error: (error) => {
+          console.error('Error searching product:', error);
+          this.searchError = `Produkt mit ID ${this.searchId} nicht gefunden`;
+        }
+      });
+  }
+
+  private refocusInput(): void {
+    this.shouldFocus = true;
   }
 }

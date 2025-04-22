@@ -63,8 +63,20 @@
           </div>
 
           <!-- SCO mode content -->
-          <div *ngIf="scoMode && !checkoutMode" class="search-bar-container">
-            <input type="text" class="search-input" placeholder="Eingabe Barcode">
+          <div *ngIf="scoMode" class="search-bar-container">
+            <div class="search-centered-wrapper">
+              <form (submit)="searchProduct($event)" class="search-form">
+                <input
+                  #searchInput
+                  type="number"
+                  class="search-input no-spinner"
+                  placeholder="Barcode scannen"
+                  [(ngModel)]="searchId"
+                  name="searchId"
+                  autocomplete="off">
+              </form>
+              <div *ngIf="searchError" class="search-error">{{ searchError }}</div>
+            </div>
           </div>
 
           <!-- Checkout mode content -->
