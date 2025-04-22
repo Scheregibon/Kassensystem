@@ -1,92 +1,114 @@
-h2 {
-  text-align: center;
+.cart-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 1rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-title {
+  margin-top: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
   color: #333;
 }
 
+.empty-cart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  color: #888;
+  font-style: italic;
+}
+
 .cart-items {
-  margin: 1rem 0;
+  overflow-y: auto;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .cart-item {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ddd;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.cart-item:last-child {
-  border-bottom: none;
+.item-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.product-name {
+.item-name {
   font-weight: 500;
-  color: #333;
+  margin-bottom: 0.25rem;
 }
 
-.product-price {
-  color: #007bff;
+.item-price {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.item-quantity {
+  font-size: 0.9rem;
+  color: #777;
+  margin-top: 0.25rem;
+}
+
+.item-actions {
+  display: flex;
+  align-items: center;
+}
+
+.remove-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: #f44336;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-summary {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
 }
 
 .cart-total {
   display: flex;
   justify-content: space-between;
-  font-size: 1.2rem;
   font-weight: bold;
-  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-h2 {
-  text-align: center;
-  color: #333;
+.total-price {
+  color: #ce8b26;
 }
 
-.cart-items {
-  margin: 1rem 0;
-}
-
-.cart-item {
+.cart-actions {
   display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ddd;
-  color: black;
+  justify-content: flex-end;
 }
 
-.cart-item:last-child {
-  border-bottom: none;
+.clear-cart-btn {
+  padding: 0.5rem 1rem;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.product-name {
-  font-weight: 500;
-  color: #333;
-}
-
-.product-price {
-  color: #007bff;
-}
-
-.cart-total {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-top: 1rem;
-}
-button {
-  background-color: #4CAF50; /* Grüner Hintergrund */
-  color: white; /* Weiße Schrift */
-  border: none; /* Kein Rahmen */
-  padding: 5px 10px; /* Innenabstand */
-  border-radius: 5px; /* Abgerundete Ecken */
-  cursor: pointer; /* Zeigt den Mauszeiger als Hand */
-  font-size: 12px; /* Schriftgröße */
-  margin: 0 5px; /* Abstand zwischen den Buttons */
-}
-
-button:hover {
-  background-color: #45a049; /* Dunkleres Grün beim Hover */
-}
-
-button:active {
-  background-color: #3e8e41; /* Noch dunkleres Grün beim Klicken */
+.clear-cart-btn:hover {
+  background-color: #eee;
 }

@@ -1,34 +1,55 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductModel } from '../../models/product.model';
-import { CartService } from '../../services/cart.service';
+import { FormsModule } from '@angular/forms';
+import { CartService, CartItem } from '../../services/cart.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
-export class CartComponent implements OnInit{
-  cart: ProductModel[] = [];
+export class CartComponent implements OnInit, OnDestroy {
+  cartItems: CartItem[] = [];
+  private cartSubscription: Subscription | undefined;
+  isLoading = false;
 
   constructor(private cartService: CartService) {}
 
   ngOnInit(): void {
-    this.cart = this.cartService.getCart();
+    this.isLoading = true;
+
+    // Subscribe to cart changes
+    this.cartSubscription = this.cartService.cartItems$.subscribe(items => {
+      this.cartItems = items;
+      this.isLoading = false;
+    });
   }
 
-  addToCart(product: ProductModel): void {
-    this.cartService.addToCart(product);
-    this.cart = this.cartService.getCart(); // Aktualisiere die lokale Warenkorb-Liste
+  ngOnDestroy(): void {
+    // Clean up subscription to prevent memory leaks
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+    }
   }
 
-  removeFromCart(productId: number): void {
+  removeItem(productId: number): void {
+    this.isLoading = true;
     this.cartService.removeFromCart(productId);
-    this.cart = this.cartService.getCart(); // Aktualisiere die lokale Warenkorb-Liste
+  }
+
+  clearCart(): void {
+    this.isLoading = true;
+    this.cartService.clearCart();
   }
 
   getTotalPrice(): number {
-    return this.cart.reduce((total, product) => total + product.price * (product.quantity || 1), 0);
+    return this.cartService.getTotalPrice();
+  }
+
+  getItemCount(): number {
+    return this.cartService.getItemCount();
   }
 }

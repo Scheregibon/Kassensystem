@@ -1,15 +1,13 @@
-import { HttpClient } from '@angular/common/http';
-import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { ProductModel } from './models/product.model';
 import { LoginComponent } from './components/login/login.component';
 import { CartComponent } from './components/cart/cart.component';
-import { ProductComponent } from './components/product/product.component';
+import { ProductService } from './services/product.service';
 import { CartService } from './services/cart.service';
-import { provideHttpClient } from '@angular/common/http';
+import { ViewStateService, ViewMode } from './services/view-state.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -29,14 +27,29 @@ export class AppComponent implements OnInit {
   productList: ProductModel[] = [];
   filteredProducts: ProductModel[] = [];
   loading = false;
-  scoMode = true; // default after log in
-  checkoutMode = false;
-  paymentComplete = false;
+
+  // View state properties
+  get scoMode(): boolean {
+    return this.viewStateService.getViewMode() === 'sco';
+  }
+
+  get searchMode(): boolean {
+    return this.viewStateService.getViewMode() === 'search';
+  }
+
+  get checkoutMode(): boolean {
+    return this.viewStateService.getViewMode() === 'checkout';
+  }
+
+  get paymentComplete(): boolean {
+    return this.viewStateService.getViewMode() === 'paymentComplete';
+  }
 
   constructor(
     private authService: AuthService,
+    private productService: ProductService,
     public cartService: CartService,
-    private http: HttpClient
+    private viewStateService: ViewStateService
   ) {}
 
   ngOnInit(): void {
@@ -50,89 +63,81 @@ export class AppComponent implements OnInit {
       }
     );
 
-    // subscribe to username
+    // Subscribe to username
     this.authService.username$.subscribe(username => {
       this.username = username;
+    });
+
+    // Subscribe to loading state
+    this.viewStateService.loading$.subscribe(isLoading => {
+      this.loading = isLoading;
     });
   }
 
   onLoginSuccess(): void {
     console.log("Login success received!");
-    // No need to manually set isAuthenticated as the subscription will handle it
     this.loadProducts();
   }
 
   toggleScoMode(): void {
-    this.scoMode = !this.scoMode;
-    console.log("Mode switched to:", this.scoMode ? "SCO Mode" : "Search Mode");
+    const newMode: ViewMode = this.scoMode ? 'search' : 'sco';
+    this.viewStateService.setViewMode(newMode);
+    console.log("Mode switched to:", newMode);
   }
-
   completePayment(): void {
-    this.paymentComplete = true;
+    this.viewStateService.setLoading(true);
+    this.cartService.completeCheckout().subscribe(
+      success => {
+        this.viewStateService.setLoading(false);
+        if (success) {
+          this.viewStateService.setViewMode('paymentComplete');
+        } else {
+          console.error('Checkout failed');
+          // Show error message
+        }
+      },
+      error => {
+        this.viewStateService.setLoading(false);
+        console.error('Checkout error:', error);
+      }
+    );
   }
 
-  // restart user-flow
+  // Restart user-flow
   startNewCustomerSession(): void {
-    this.checkoutMode = false;
-    this.paymentComplete = false;
+    this.viewStateService.setViewMode('search');
   }
 
   toggleCheckoutMode(): void {
-    this.checkoutMode = !this.checkoutMode;
+    const newMode: ViewMode = this.checkoutMode ? 'search' : 'checkout';
+    this.viewStateService.setViewMode(newMode);
   }
 
   loadProducts(): void {
-    this.loading = true;
-    this.http.get<ProductModel[]>('http://localhost:8080/api/products', {
-      observe: 'response',
-      withCredentials: true // Add this to include auth cookies
-    })
-      .pipe(
-        catchError(error => {
-          console.error('Error loading products:', error);
-          this.loading = false;
-          return of(null);
-        }),
-        map(response => {
-          if (!response) return [];
-          return response.body || [];
-        })
-      )
+    this.viewStateService.setLoading(true);
+    this.productService.getAllProducts()
+      .pipe(finalize(() => this.viewStateService.setLoading(false)))
       .subscribe(products => {
         this.productList = products;
         this.filteredProducts = [...this.productList];
-        this.loading = false;
       });
   }
 
   filterProducts(category: string, event: Event): void {
     event.preventDefault();
-    this.loading = true;
+    this.viewStateService.setLoading(true);
 
-    const endpoint = category === 'Alle'
-      ? 'http://localhost:8080/api/products'
-      : `http://localhost:8080/api/products/category/${category}`;
-
-    // Add artificial delay of 1 second
+    // Add artificial delay for UX feedback
     setTimeout(() => {
-      this.http.get<ProductModel[]>(endpoint, {
-        withCredentials: true
-      })
-        .pipe(
-          catchError(error => {
-            console.error(`Error loading ${category} products:`, error);
-            this.loading = false;
-            return of([]);
-          })
-        )
+      this.productService.getProductsByCategory(category)
+        .pipe(finalize(() => this.viewStateService.setLoading(false)))
         .subscribe(products => {
           this.filteredProducts = products;
-          this.loading = false;
         });
-    }, 300); // Simulate network delay
+    }, 300);
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
   }
 
@@ -148,10 +153,8 @@ export class AppComponent implements OnInit {
       }
     });
 
-    // Log for now (will be implemented later)
+    // Add to cart
+    this.cartService.addToCart(product);
     console.log('Product added to cart:', product);
-
-    // Add this when you implement cart functionality:
-    // this.cartService.addToCart(product);
   }
 }

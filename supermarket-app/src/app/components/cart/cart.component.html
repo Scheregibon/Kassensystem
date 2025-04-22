@@ -1,6 +1,27 @@
 <div class="cart-container">
-  <h2>Einkauf</h2>
-  <div class="cart-items">
-    <p class="empty-cart-message">Your cart is empty</p>
+  <h3 class="cart-title">Warenkorb</h3>
+
+  <div class="empty-cart" *ngIf="cartItems.length === 0">
+    <p>Ihr Warenkorb ist leer</p>
+  </div>
+
+  <div class="cart-items" *ngIf="cartItems.length > 0">
+    <div class="cart-item" *ngFor="let item of cartItems">
+      <div class="item-details">
+        <div class="item-name">{{ item.product.name }}</div>
+        <div class="item-price">{{ item.product.price | currency:'EUR' }}</div>
+        <div class="item-quantity">Menge: {{ item.quantity }}</div>
+      </div>
+      <div class="item-actions">
+        <button class="remove-btn" (click)="removeItem(item.product.id)">×</button>
+      </div>
+    </div>
+
+    <div class="cart-summary">
+      <div class="cart-total">
+        <span>Gesamt:</span>
+        <span class="total-price">{{ getTotalPrice() | currency:'EUR' }}</span>
+      </div>
+    </div>
   </div>
 </div>
