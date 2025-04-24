@@ -109,6 +109,18 @@ export class CartService {
     }
   }
 
+  decreaseQuantity(product: ProductModel): void {
+    const index = this.cartItems.findIndex(item => item.product.id === product.id);
+    if (index > -1) {
+      if (this.cartItems[index].quantity > 1) {
+        this.cartItems[index].quantity--;
+      } else {
+        this.cartItems.splice(index, 1);
+      }
+      this.cartItemsSubject.next([...this.cartItems]);
+    }
+  }
+
   clearCart(): void {
     this.clearCartRecursively(this.getItemCount());
   }

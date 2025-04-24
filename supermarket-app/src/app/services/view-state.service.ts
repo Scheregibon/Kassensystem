@@ -23,6 +23,20 @@ export class ViewStateService {
     return this.viewModeSubject.value;
   }
 
+  toggleScoMode(): void {
+    const currentMode = this.getViewMode();
+    this.setViewMode(currentMode === 'sco' ? 'search' : 'sco');
+  }
+
+  toggleCheckoutMode(): void {
+    const currentMode = this.getViewMode();
+    this.setViewMode(currentMode === 'checkout' ? 'search' : 'checkout');
+  }
+
+  resetToSearchMode(): void {
+    this.setViewMode('search');
+  }
+
   setLoading(isLoading: boolean): void {
     this.loadingSubject.next(isLoading);
   }

@@ -1,14 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from './services/auth.service';
-import { ProductModel } from './models/product.model';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { LoginComponent } from './components/login/login.component';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { CartComponent } from './components/cart/cart.component';
-import { ProductService } from './services/product.service';
+import { NgOptimizedImage } from '@angular/common';
+import { ProductModel } from './models/product.model';
+import { AuthService } from './services/auth.service';
 import { CartService } from './services/cart.service';
-import { ViewStateService, ViewMode } from './services/view-state.service';
-import { finalize } from 'rxjs/operators';
+import { ViewStateService } from './services/view-state.service';
+import { ProductService } from './services/product.service';
 
 @Component({
   selector: 'app-root',
@@ -17,25 +17,20 @@ import { finalize } from 'rxjs/operators';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     LoginComponent,
+    SearchBarComponent,
     CartComponent,
-    NgOptimizedImage,
+    NgOptimizedImage
   ]
 })
-export class AppComponent implements OnInit, AfterViewChecked {
-  @ViewChild('searchInput') searchInput!: ElementRef;
-
+export class AppComponent implements OnInit {
   isAuthenticated = false;
   username = '';
+  loading = false;
   productList: ProductModel[] = [];
   filteredProducts: ProductModel[] = [];
-  loading = false;
-  searchId: number | null = null;
-  searchError: string | null = null;
-  private shouldFocus = false;
 
-  // View state properties
+  // View state getters
   get scoMode(): boolean {
     return this.viewStateService.getViewMode() === 'sco';
   }
@@ -54,181 +49,114 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
   constructor(
     private authService: AuthService,
-    private productService: ProductService,
     public cartService: CartService,
-    private viewStateService: ViewStateService
+    private viewStateService: ViewStateService,
+    private productService: ProductService
   ) {}
 
   ngOnInit(): void {
-
-    // Check authentication status
+    // Subscribe to authentication status
     this.authService.isAuthenticated$.subscribe(
-      (isAuthenticated: boolean) => {
-        this.isAuthenticated = isAuthenticated;
-        if (isAuthenticated) {
-          this.loadProducts();
-          this.shouldFocus = true;
-        }
-      }
+      isAuthenticated => this.isAuthenticated = isAuthenticated
     );
 
     // Subscribe to username
-    this.authService.username$.subscribe(username => {
-      this.username = username;
-    });
+    this.authService.username$.subscribe(
+      username => this.username = username
+    );
 
     // Subscribe to loading state
-    this.viewStateService.loading$.subscribe(isLoading => {
-      this.loading = isLoading;
-    });
+    this.viewStateService.loading$.subscribe(
+      isLoading => this.loading = isLoading
+    );
 
-    // Subscribe to view mode changes to handle search input focus
-    this.viewStateService.viewMode$.subscribe(mode => {
-      if (mode === 'search' || mode === 'sco') {
-        this.shouldFocus = true;
-      }
-    });
-  }
-
-  ngAfterViewChecked(): void {
-    if (this.shouldFocus && this.searchInput) {
-      try {
-        this.searchInput.nativeElement.focus();
-        this.shouldFocus = false;
-      } catch (err) {
-        console.error('Error focusing search input:', err);
-      }
-    }
-  }
-
-  onLoginSuccess(): void {
-    console.log("Login success received!");
+    // Load products
     this.loadProducts();
-    this.shouldFocus = true;
-  }
-
-  toggleScoMode(): void {
-    const newMode: ViewMode = this.scoMode ? 'search' : 'sco';
-    this.viewStateService.setViewMode(newMode);
-    console.log("Mode switched to:", newMode);
-    this.shouldFocus = true;
-  }
-
-  completePayment(): void {
-    this.viewStateService.setLoading(true);
-    this.cartService.completeCheckout().subscribe({
-      next: success => {
-        this.viewStateService.setLoading(false);
-        if (success) {
-          this.viewStateService.setViewMode('paymentComplete');
-        } else {
-          console.error('Checkout failed');
-        }
-      },
-      error: error => {
-        this.viewStateService.setLoading(false);
-        console.error('Checkout error:', error);
-      }
-    });
-  }
-
-  // Restart user-flow
-  startNewCustomerSession(): void {
-    this.viewStateService.setViewMode('search');
-  }
-
-  toggleCheckoutMode(): void {
-    const newMode: ViewMode = this.checkoutMode ? 'search' : 'checkout';
-    this.viewStateService.setViewMode(newMode);
   }
 
   loadProducts(): void {
     this.viewStateService.setLoading(true);
-    this.productService.getAllProducts()
-      .pipe(finalize(() => this.viewStateService.setLoading(false)))
-      .subscribe({
-        next: (products) => {
-          this.productList = products;
-          this.filteredProducts = [...this.productList];
-        },
-        error: (error) => {
-          console.error('Failed to load products:', error);
-        }
-      });
+    this.productService.getAllProducts().subscribe({
+      next: (products) => {
+        this.productList = products;
+        this.filteredProducts = [...products];
+        this.viewStateService.setLoading(false);
+      },
+      error: (error) => {
+        console.error('Failed to load products:', error);
+        this.viewStateService.setLoading(false);
+      }
+    });
   }
 
   filterProducts(category: string, event: Event): void {
     event.preventDefault();
     this.viewStateService.setLoading(true);
 
-    this.productService.getProductsByCategory(category)
-      .pipe(finalize(() => this.viewStateService.setLoading(false)))
-      .subscribe({
+    setTimeout(() => {
+      this.productService.getProductsByCategory(category).subscribe({
         next: (products) => {
           this.filteredProducts = products;
+          this.viewStateService.setLoading(false);
         },
         error: (error) => {
           console.error(`Failed to load ${category} products:`, error);
+          this.viewStateService.setLoading(false);
         }
       });
+    }, 250);
+  }
+
+  // Event handlers
+  onLoginSuccess(): void {
+    console.log("Login success received!");
+  }
+
+  toggleScoMode(): void {
+    this.viewStateService.toggleScoMode();
+  }
+
+  toggleCheckoutMode(): void {
+    this.viewStateService.toggleCheckoutMode();
+  }
+
+  onProductFound(product: ProductModel): void {
+    this.cartService.addToCart(product);
+  }
+
+  onPaymentComplete(success: boolean): void {
+    if (success) {
+      this.viewStateService.setViewMode('paymentComplete');
+    } else {
+      console.error('Checkout failed');
+    }
+  }
+
+  startNewCustomerSession(): void {
+    this.viewStateService.resetToSearchMode();
+  }
+
+  handleAddToCart(product: ProductModel): void {
+    this.cartService.addToCart(product);
+  }
+
+  completeCheckout(): void {
+    this.cartService.completeCheckout().subscribe({
+      next: (success) => {
+        if (success) {
+          this.viewStateService.setViewMode('paymentComplete');
+          console.log('Checkout successful!');
+        } else {
+          console.error('Checkout failed');
+        }
+      },
+      error: (error) => {
+        console.error('Error during checkout:', error);
+      }
+    });
   }
 
   logout(): void {
     this.authService.logout();
-  }
-
-  addToCart(product: ProductModel): void {
-    // Add animation effect for feedback
-    const productElements = document.querySelectorAll('.product-tile');
-    productElements.forEach(el => {
-      if ((el as HTMLElement).textContent?.includes(product.name)) {
-        el.classList.add('added-to-cart');
-        setTimeout(() => {
-          el.classList.remove('added-to-cart');
-        }, 300);
-      }
-    });
-
-    // Add to cart
-    this.cartService.addToCart(product);
-    console.log('Product added to cart:', product);
-  }
-
-  // Handle product search by ID - only triggered by Enter key
-  searchProduct(event?: Event): void {
-    if (event) {
-      event.preventDefault();
-    }
-
-    if (!this.searchId) {
-      this.searchError = "Bitte geben Sie eine Produkt-ID ein";
-      this.refocusInput();
-      return;
-    }
-
-    this.searchError = null;
-    this.viewStateService.setLoading(true);
-
-    this.productService.getProductById(this.searchId)
-      .pipe(finalize(() => {
-        this.viewStateService.setLoading(false);
-        this.refocusInput();
-      }))
-      .subscribe({
-        next: (product) => {
-          if (product) {
-            this.addToCart(product);
-            this.searchId = null; // Clear the input after successful search
-          }
-        },
-        error: (error) => {
-          console.error('Error searching product:', error);
-          this.searchError = `Produkt mit ID ${this.searchId} nicht gefunden`;
-        }
-      });
-  }
-
-  private refocusInput(): void {
-    this.shouldFocus = true;
   }
 }

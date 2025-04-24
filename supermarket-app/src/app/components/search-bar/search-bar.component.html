@@ -1,4 +1,16 @@
 <div class="search-container">
-  <input type="text" placeholder="Search products..." class="search-input">
-  <button class="search-button">🔍</button>
+  <div class="search-bar">
+    <input
+      #searchInput
+      type="text"
+      placeholder="Barcode scannen"
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="searchProduct()"
+      class="search-input">
+  </div>
+  @if (searchError) {
+    <div class="search-error">
+      {{searchError}}
+    </div>
+  }
 </div>

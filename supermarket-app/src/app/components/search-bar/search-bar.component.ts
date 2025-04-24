@@ -1,24 +1,67 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { AppComponent } from '../../app.component';
-import { CartService } from '../../services/cart.service';
-import { Input } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Output, EventEmitter, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { ProductModel } from '../../models/product.model';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
+  standalone: true,
+  imports: [
+    FormsModule,
+    CommonModule
+  ],
   styleUrls: ['./search-bar.component.css']
 })
-export class SearchBarComponent {
-  constructor(private cartService: CartService, private appComponent: AppComponent) {}
+export class SearchBarComponent implements OnInit {
+  @Input() focusOnInit = false;
+  @Input() showInstructions = false;
+  @Input() showScanAnimation = false;
+  @Output() productFound = new EventEmitter<ProductModel>();
 
-  addToCart(productId: string): void {
-    const id = parseInt(productId, 10);
-    const product = this.appComponent.productList.find((p) => p.id === id);
-    if (product) {
-      this.cartService.addToCart(product);
-    } else {
-      console.log(`Produkt mit ID ${productId} nicht gefunden.`);
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+  searchQuery: string = '';
+  searchError: string = '';
+
+  constructor(private productService: ProductService) {}
+
+  ngOnInit() {
+    this.searchInput?.nativeElement?.focus();
+  }
+
+  searchProduct() {
+    if (!this.searchQuery.trim()) {
+      this.searchError = 'Bitte geben Sie eine Produkt-ID oder einen Barcode ein';
+      this.searchInput.nativeElement.focus();
+      return;
     }
+
+    const productId = Number(this.searchQuery.trim());
+
+    if (isNaN(productId)) {
+      this.searchError = 'Die Produkt-ID muss eine Zahl sein';
+      this.searchInput.nativeElement.focus();
+      return;
+    }
+
+    this.productService.getProductById(productId).subscribe({
+      next: (product) => {
+        if (product) {
+          this.productFound.emit(product);
+          this.searchQuery = '';
+          this.searchError = '';
+
+          this.searchInput.nativeElement.focus();
+        } else {
+          this.searchError = 'Produkt nicht gefunden';
+          this.searchInput.nativeElement.focus();
+        }
+      },
+      error: (error) => {
+        this.searchError = 'Das Produkt konnte nicht gefunden werden';
+        this.searchInput.nativeElement.focus();
+      }
+    });
   }
 }

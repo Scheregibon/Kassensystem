@@ -1,40 +1,66 @@
-.searchbar-container {
-    display: flex; /* Flexbox für horizontale Anordnung */
-    justify-content: center; /* Zentriert die Inhalte horizontal */
-    align-items: center; /* Zentriert die Inhalte vertikal */
-    margin: 0 auto; /* Zentriert das gesamte Element */
-    align-self: center;
-    padding: 10px;
-    gap: 10px; /* Abstand zwischen den Elementen */
-    height: 100vh; /* Nimmt die gesamte Höhe des Viewports ein */
+.search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin-top: 25%;
 }
 
-.searchbar {
-    flex: 1; /* Nimmt den verfügbaren Platz ein */
-    max-width: 400px; /* Begrenzung der Breite */
-    padding: 10px;
-    font-size: 16px; /* Schriftgröße */
-    border: 1px solid #ccc; /* Rahmen */
-    border-radius: 5px; /* Abgerundete Ecken */
+.search-instruction {
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
-button {
-    background-color: #4CAF50; /* Grüner Hintergrund */
-    color: white; /* Weiße Schrift */
-    align-content: center;
-    border: none; /* Kein Rahmen */
-    padding: 10px 20px; /* Innenabstand */
-    border-radius: 5px; /* Abgerundete Ecken */
-    cursor: pointer; /* Zeigt den Mauszeiger als Hand */
-    font-size: 16px; /* Schriftgröße */
-    transition: background-color 0.3s ease; /* Weicher Übergang bei Hover */
+.search-instruction p {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  font-weight: 500;
 }
 
-button:hover {
-    background-color: #45a049; /* Dunkleres Grün beim Hover */
+.search-bar {
+  width: 80%;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-button:active {
-    background-color: #3e8e41; /* Noch dunkleres Grün beim Klicken */
-    transform: scale(0.98); /* Leichtes Verkleinern beim Klicken */
+.search-input {
+  width: 100%;
+  min-width: 500px;
+  padding: 15px;
+  font-size: 18px;
+  border: 2px solid #ce8b26;
+  border-radius: 4px;
+  outline: none;
+  text-align: center;
+}
+
+.search-input:focus {
+  border-color: #ce8b26;
+  box-shadow: 0 0 0 3px rgba(206, 139, 38, 0.2);
+}
+
+.scan-animation {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.scan-gif {
+  max-width: 300px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-error {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 12px;
+  border-radius: 4px;
+  margin-top: 20px;
+  font-size: 16px;
+  border-left: 3px solid #d32f2f;
+  text-align: center;
+  width: 80%;
+  max-width: 500px;
+  margin-left: 3%;
 }

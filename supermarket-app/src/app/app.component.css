@@ -1,47 +1,14 @@
-/* Shop Header */
 .shop-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 70px;
-  background-color: #ce8b26;
-  color: white;
-  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  width: 100%;
+  background-color: #ce8b26;
+  padding: 1rem 2rem;
+  color: white;
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.logout-button {
-  background-color: white;
-  color: #ce8b26;
-  border: none;
-  padding: 8px 16px;
-  margin-right: 50px;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.logout-button:hover {
-  background-color: #f0f0f0;
-  transform: translateY(-2px);
+.header-left, .header-right {
+  flex: 1;
 }
 
 .header {
@@ -49,248 +16,137 @@
   font-weight: bold;
 }
 
-/* Main Content Layout */
-main {
-  padding-top: 70px;
-  min-height: 100vh;
-  background-color: #f5f5f5;
-  overflow-x: hidden;
-  width: 100%;
-  box-sizing: border-box;
+.header-center {
+  text-align: center;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  width: 100%;
+.current-user {
+  font-size: 1.2rem;
+}
+
+.logout-button {
+  background-color: white;
+  color: #ce8b26;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+  font-weight: bold;
+}
+
+.logout-button:hover {
+  background-color: #f5f5f5;
+}
+
+main {
+  height: calc(100vh - 70px);
+}
+
+.login-container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
 }
 
 .authenticated-content {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 70px);
-  width: 100%;
+  height: 100%;
 }
 
-/* Category Bar */
 .category-bar {
-  background-color: #f8f8f8;
-  padding: 0.8rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #f5f5f5;
+  padding: 0.5rem 2rem;
   border-bottom: 1px solid #ddd;
-  width: 100%;
-  margin-bottom: 0;
-  z-index: 900;
 }
 
 .category-bar ul {
-  list-style: none;
   display: flex;
-  gap: 1.5rem;
+  list-style: none;
   padding: 0;
   margin: 0;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
 .category-bar li {
-  margin: 0;
+  margin: 0 1rem;
 }
 
 .category-bar a {
   text-decoration: none;
-  color: #555;
-  font-weight: 600;
-  font-size: 1rem;
+  color: #333;
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s;
-  display: block;
+  font-weight: 500;
 }
 
 .category-bar a:hover {
-  background-color: #ce8b26;
-  color: #fff;
+  background-color: #e0e0e0;
 }
 
-/* Main layout with left-right split */
 .main-content {
   display: flex;
-  flex: 1;
-  overflow: hidden;
-  width: 100%;
+  height: calc(100% - 50px);
 }
 
-/* Left side content */
 .left-content {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: hidden;
   background-color: #f9f9f9;
   height: 100%;
 }
 
-/* Product list container */
-.product-list-container {
-  padding: 1rem;
-}
-
-/* Search bar container for SCO mode */
-.search-bar-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  padding-inline: 2rem;
-}
-
-.search-input {
-  width: 80%;
-  max-width: 500px;
-  padding: 1rem;
-  border: 2px solid #ce8b26;
-  border-radius: 4px;
-  font-size: 1.2rem;
-  outline: none;
-}
-.search-input:focus {
-  border-color: #ce8b26;
-  box-shadow: 0 0 0 3px rgba(206, 139, 38, 0.3); /* Orange-colored glow */
-}
-
-/* Right side content - Cart */
 .right-content {
-  width: 35%;
-  min-width: 300px;
-  max-width: 400px;
+  width: 400px;
+  background-color: white;
+  border-left: 1px solid #ddd;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
-  box-shadow: -4px 0 10px rgba(0,0,0,0.1);
-  height: 100%;
 }
 
-.cart-container {
-  flex: 1;
-  padding: 1rem;
-  overflow-y: auto;
-}
-
-/* Checkout button container */
-.checkout-button-container {
-  padding: 1rem;
-  background-color: #f8f8f8;
-  border-top: 1px solid #ddd;
-}
-
-.checkout-button {
-  background-color: #ce8b26;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  font-size: 1.1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.checkout-button:hover {
-  transform: scale(1.02);
-  background-color: #b37420;
-}
-
-/* Loading indicator */
-.loading-indicator {
-  text-align: center;
-  padding: 2rem;
-  color: #666;
-  font-size: 1.1rem;
-}
-
-/* SCO button - Fixed positioning and styling */
 .sco-button-container {
   position: fixed;
   bottom: 20px;
   left: 20px;
-  z-index: 1000;
 }
 
 .sco-button {
-  background-color: #555;
+  background-color: #ce8b26;
   color: white;
+  padding: 0.75rem 1.5rem;
   border: none;
-  padding: 10px 20px;
-  border-radius: 30px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
   font-weight: bold;
-  min-width: 120px;
-  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .sco-button:hover {
-  background-color: #333;
-  transform: translateY(-2px);
+  background-color: #b37420;
 }
 
-/* Login container */
-.login-container {
-  height: calc(100vh - 70px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0;
-  padding-top: 0;
-}
-
-/* Checkout view styles */
-.checkout-view {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  margin-top: 20%;
-  padding: 2rem;
-  overflow-y: hidden; /* Prevent scrolling */
-}
-
-.voucher-section {
-  margin-bottom: 1.5rem; /* Reduced from 3rem to bring elements closer */
-}
-
-.voucher-container {
-  display: flex;
-  max-width: 500px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.voucher-input {
-  flex: 1;
+.checkout-button-container {
   padding: 1rem;
-  font-size: 1rem;
-  border: 2px solid #ce8b26;
-  border-radius: 4px 0 0 4px;
-  outline: none;
+  background-color: white;
+  border-top: 1px solid #ddd;
+  margin-top: auto;
 }
 
-.voucher-input:focus {
-  border-color: #ce8b26;
-  box-shadow: 0 0 0 3px rgba(206, 139, 38, 0.3);
-}
-
-.voucher-button {
-  padding: 1rem 1.5rem;
+.checkout-button {
+  width: 100%;
   background-color: #ce8b26;
   color: white;
+  padding: 1rem;
   border: none;
-  border-radius: 0 4px 4px 0;
+  border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.3s;
+  font-size: 1.2rem;
+}
+
+.checkout-button:hover {
+  background-color: #b37420;
 }
 
 .voucher-button:hover {
@@ -315,19 +171,12 @@ html, body {
   font-weight: bold;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   transition: all 0.3s ease;
+  margin-top: 40vh;
 }
 
 .payment-button:hover {
   background-color: #45a049;
   transform: translateY(-2px);
-}
-
-/* Also update the left-content to prevent scrolling */
-.left-content {
-  flex: 1;
-  overflow-y: hidden;
-  background-color: #f9f9f9;
-  height: 100%;
 }
 
 /* Payment complete styles */
@@ -386,7 +235,7 @@ html, body {
   transform: translateY(-2px);
 }
 
-/* Add this to your app.component.css */
+/* Products grid styles */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -465,97 +314,9 @@ html, body {
   transform: scale(0.98) !important;
 }
 
-/* Search styles */
-.search-form {
+.sco-search-container {
   display: flex;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.search-input {
-  flex: 1;
-  padding: 12px;
-  font-size: 16px;
-  border: 2px solid #ddd;
-  border-radius: 4px 0 0 4px;
-  outline: none;
-}
-
-.search-input:focus {
-  border-color: #ce8b26;
-  box-shadow: 0 0 0 2px rgba(206, 139, 38, 0.2);
-}
-
-.search-button {
-  padding: 12px 20px;
-  background-color: #ce8b26;
-  color: white;
-  border: none;
-  border-radius: 0 4px 4px 0;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.search-button:hover {
-  background-color: #b67a1e;
-}
-
-/* search styles */
-.search-bar-container {
-  width: 100%;
   justify-content: center;
   align-items: center;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  text-align: center;
-}
-
-.search-title {
-  margin-bottom: 20px;
-  color: #333;
-  font-size: 1.5rem;
-}
-
-.search-form {
-  display: flex;
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-.search-input {
-  flex: 1;
-  padding: 15px;
-  font-size: 18px;
-  border: 2px solid #ce8b26;
-  border-radius: 4px;
-  outline: none;
-  text-align: center;
-}
-
-.search-input:focus {
-  border-color: #ce8b26;
-  box-shadow: 0 0 0 3px rgba(206, 139, 38, 0.2);
-}
-
-.no-spinner::-webkit-outer-spin-button,
-.no-spinner::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.no-spinner {
-  -moz-appearance: textfield; /* just for Firefox */
-}
-
-.search-error {
-  color: #d32f2f;
-  background-color: #ffebee;
-  padding: 12px;
-  border-radius: 4px;
-  margin-top: 10px;
-  font-size: 14px;
-  border-left: 3px solid #d32f2f;
-  text-align: left;
+  height: 100%;
 }
