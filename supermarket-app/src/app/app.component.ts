@@ -19,8 +19,7 @@ import { ProductService } from './services/product.service';
     CommonModule,
     LoginComponent,
     SearchBarComponent,
-    CartComponent,
-    NgOptimizedImage
+    CartComponent
   ]
 })
 export class AppComponent implements OnInit {
@@ -108,8 +107,14 @@ export class AppComponent implements OnInit {
   }
 
   // Event handlers
-  onLoginSuccess(): void {
-    console.log("Login success received!");
+  onLoginSuccess() {
+    this.isAuthenticated = true;
+
+    this.cartService.clearCart();
+
+    this.loadProducts();
+
+    this.viewStateService.setViewMode('search');
   }
 
   toggleScoMode(): void {
